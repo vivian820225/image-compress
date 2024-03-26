@@ -32,7 +32,14 @@ const compressImage = async (img) => {
   }
 
   try {
-    const outputPath = path.join(OUTPUT_DIR, imgName)
+    // 取得輸出路徑相對於輸入路徑的相對路徑
+    const relativePath = path.relative(INPUT_DIR, img)
+    // 產生輸出路徑，保留子資料夾結構
+    const outputDir = path.join(OUTPUT_DIR, path.dirname(relativePath))
+
+    createDirectoryIfNotExists(outputDir)
+
+    const outputPath = path.join(outputDir, imgName)
 
     // 檢查是否存在相同名稱及格式的檔案，若存在則刪除原檔案
     if (fs.existsSync(outputPath)) {
@@ -52,7 +59,14 @@ const convertToWebp = async (img) => {
   try {
     const imgName = path.parse(img).name
 
-    const outputPath = path.join(OUTPUT_DIR, `${imgName}.webp`)
+    // 取得輸出路徑相對於輸入路徑的相對路徑
+    const relativePath = path.relative(INPUT_DIR, img)
+    // 產生輸出路徑，保留子資料夾結構
+    const outputDir = path.join(OUTPUT_DIR, path.dirname(relativePath))
+
+    createDirectoryIfNotExists(outputDir)
+
+    const outputPath = path.join(outputDir, `${imgName}.webp`)
 
     // 檢查是否存在相同名稱及格式的檔案，若存在則刪除原檔案
     if (fs.existsSync(outputPath)) {
@@ -104,7 +118,6 @@ const createDirectoryIfNotExists = (dir) => {
 // 圖片處理
 const processImages = async () => {
   try {
-    createDirectoryIfNotExists(OUTPUT_DIR)
     await processDirectory(INPUT_DIR)
   } catch (error) {
     console.error('處理圖片時發生錯誤:', error)
